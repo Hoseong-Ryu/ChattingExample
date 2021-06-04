@@ -48,7 +48,6 @@
             android:text="전송"
             android:textColor="@color/white"/>
 
-
     </LinearLayout>
 
 
