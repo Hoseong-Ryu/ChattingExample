@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import com.example.chatting.databinding.ActivityMainBinding
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -28,23 +29,27 @@ class MainActivity : AppCompatActivity() {
 
         try {
             //IO.socket 메소드는 은 저 URL 을 토대로 클라이언트 객체를 Return 합니다.
-            mSocket = IO.socket("https://trest.loca.lt")
+            mSocket = IO.socket("https://trest-server.loca.lt")
             Log.d("chatActivity socket", "connected")
         } catch (e: URISyntaxException) {
             Log.d("chatActivity socket", "failed")
         }
         mSocket.connect()
-
+        mSocket.on("reception", reception)
         binding.btnSend.setOnClickListener {
 
             val obj = JSONObject()
             obj.put("name", username)
             obj.put("msg", binding.editText1.text.toString())
-            obj.put("room", 1)
+            obj.put("room", "1")
             Log.d("왜안돼",obj.toString())
-            mSocket.emit("test", obj)
+            mSocket.emit("chat", obj)
 
         }
     }
+    var reception = Emitter.Listener {
+        Log.d("새로운 메시지 :", it[0].toString() )
+    }
+
 
 }
